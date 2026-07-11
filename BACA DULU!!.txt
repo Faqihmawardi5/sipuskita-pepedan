@@ -1,0 +1,22 @@
+BACA DULU!!!
+
+INFORMASI PENTING
+
+1.  Ekstrak file ZIP, kemudian ubah nama folder hasil ekstrak menjadi:
+    sipuskita
+
+2.  Gunakan XAMPP versi 7.4 dengan PHP versi 7.4.33.
+
+3.  Buka phpMyAdmin, kemudian buat database baru dengan nama: perpus2
+
+4.  Buka file: application/config/config.php
+
+    Ubah konfigurasi berikut menjadi:
+
+    $config[‘base_url’] = “http://localhost/sipuskita/”;
+
+5.  Akun Login
+
+    Petugas Username : ade Password : 123
+
+    Anggota Username : faqih Password : 123
