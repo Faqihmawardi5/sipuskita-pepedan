@@ -26,7 +26,7 @@
                       <p>Anggota</p>
                     </div>
                     <div class="icon">
-                    <i class="fa fa-edit" style="color: white;"></i>
+                    <i class="fa fa-user-plus" style="color: white;"></i>
                     </div>
                     <a href="user" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                   </div>
@@ -38,7 +38,7 @@
                     <div class="inner">
                       <h3><?= $count_buku;?></h3>
 
-                      <p>Jenis Buku</p>
+                      <p>Jumlah Buku</p>
                     </div>
                     <div class="icon">
                       <i class="fa fa-book" style="color: white;"></i>
@@ -56,7 +56,7 @@
                       <p>Pinjam</p>
                     </div>
                     <div class="icon">
-                      <i class="fa fa-user-plus" style="color: white;"></i>
+                      <i class="fa fa-edit" style="color: white;"></i>
                     </div>
                     <a href="transaksi" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
                   </div>

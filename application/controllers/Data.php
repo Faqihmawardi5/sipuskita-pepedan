@@ -1,286 +1,242 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+// Include Dompdf manual
+require_once APPPATH.'third_party/dompdf/autoload.inc.php';
+use Dompdf\Dompdf;
 class Data extends CI_Controller {
+
 	function __construct(){
-	 parent::__construct();
-	 	//validasi jika user belum login
-     $this->data['CI'] =& get_instance();
-     $this->load->helper(array('form', 'url'));
-     $this->load->model('M_Admin');
+		parent::__construct();
+
+		$this->load->helper(array('form','url'));
+		$this->load->model('M_Admin');
+
 		if($this->session->userdata('masuk_perpus') != TRUE){
-				$url=base_url('login');
-				redirect($url);
+			redirect(base_url('login'));
 		}
 	}
 
+	// =========================
+	// DATA BUKU
+	// =========================
 	public function index()
 	{
-		$this->data['idbo'] = $this->session->userdata('ses_id');
-		$this->data['buku'] =  $this->db->query("SELECT * FROM tbl_buku ORDER BY id_buku DESC");
-        $this->data['title_web'] = 'Data Buku';
-        $this->load->view('header_view',$this->data);
-        $this->load->view('sidebar_view',$this->data);
-        $this->load->view('buku/buku_view',$this->data);
-        $this->load->view('footer_view',$this->data);
+		$data['idbo'] = $this->session->userdata('ses_id');
+		$data['buku'] = $this->db->query("SELECT * FROM tbl_buku ORDER BY id_buku DESC");
+		$data['title_web'] = 'Data Buku';
+
+		$this->load->view('header_view',$data);
+		$this->load->view('sidebar_view',$data);
+		$this->load->view('buku/buku_view',$data);
+		$this->load->view('footer_view',$data);
 	}
 
-	public function bukupdf()
+	public function bukudetail($id)
 	{
-		$this->load->library('pdf');
-		$data['title'] = "Laporan Data Buku";
-		$data['buku'] = $this->db->get('tbl_buku')->result();
+		$data['idbo'] = $this->session->userdata('ses_id');
 
-		$this->pdf->setPaper('A4', 'landscape');
-		$this->pdf->filename = "laporan_data_buku.pdf";
-		$this->pdf->load_view('buku/buku_pdf', $data);
+		$data['buku'] = $this->db->get_where('tbl_buku', ['id_buku'=>$id])->row();
+
+		$data['title_web'] = 'Detail Buku';
+
+		$this->load->view('header_view',$data);
+		$this->load->view('sidebar_view',$data);
+		$this->load->view('buku/detail',$data);
+		$this->load->view('footer_view',$data);
 	}
 
 
 
-	public function bukudetail()
-	{
-		$this->data['idbo'] = $this->session->userdata('ses_id');
-		$count = $this->M_Admin->CountTableId('tbl_buku','id_buku',$this->uri->segment('3'));
-		if($count > 0)
-		{
-			$this->data['buku'] = $this->M_Admin->get_tableid_edit('tbl_buku','id_buku',$this->uri->segment('3'));
-			$this->data['kats'] =  $this->db->query("SELECT * FROM tbl_kategori ORDER BY id_kategori DESC")->result_array();
-			$this->data['rakbuku'] =  $this->db->query("SELECT * FROM tbl_rak ORDER BY id_rak DESC")->result_array();
-
-		}else{
-			echo '<script>alert("BUKU TIDAK DITEMUKAN");window.location="'.base_url('data').'"</script>';
-		}
-
-		$this->data['title_web'] = 'Data Buku Detail';
-        $this->load->view('header_view',$this->data);
-        $this->load->view('sidebar_view',$this->data);
-        $this->load->view('buku/detail',$this->data);
-        $this->load->view('footer_view',$this->data);
-	}
-
-	public function bukuedit()
-	{
-		$this->data['idbo'] = $this->session->userdata('ses_id');
-		$count = $this->M_Admin->CountTableId('tbl_buku','id_buku',$this->uri->segment('3'));
-		if($count > 0)
-		{
-			
-			$this->data['buku'] = $this->M_Admin->get_tableid_edit('tbl_buku','id_buku',$this->uri->segment('3'));
-	   
-			$this->data['kats'] =  $this->db->query("SELECT * FROM tbl_kategori ORDER BY id_kategori DESC")->result_array();
-			$this->data['rakbuku'] =  $this->db->query("SELECT * FROM tbl_rak ORDER BY id_rak DESC")->result_array();
-
-		}else{
-			echo '<script>alert("BUKU TIDAK DITEMUKAN");window.location="'.base_url('data').'"</script>';
-		}
-
-		$this->data['title_web'] = 'Data Buku Edit';
-        $this->load->view('header_view',$this->data);
-        $this->load->view('sidebar_view',$this->data);
-        $this->load->view('buku/edit_view',$this->data);
-        $this->load->view('footer_view',$this->data);
-	}
-
+	// =========================
+	// TAMBAH BUKU
+	// =========================
 	public function bukutambah()
 	{
-		$this->data['idbo'] = $this->session->userdata('ses_id');
+		$data['idbo'] = $this->session->userdata('ses_id');
+		$data['kats'] = $this->db->get('tbl_kategori')->result_array();
+		$data['rakbuku'] = $this->db->get('tbl_rak')->result_array();
+		$data['title_web'] = 'Tambah Buku';
 
-		$this->data['kats'] =  $this->db->query("SELECT * FROM tbl_kategori ORDER BY id_kategori DESC")->result_array();
-		$this->data['rakbuku'] =  $this->db->query("SELECT * FROM tbl_rak ORDER BY id_rak DESC")->result_array();
+		$this->load->view('header_view',$data);
+		$this->load->view('sidebar_view',$data);
+		$this->load->view('buku/tambah_view',$data);
+		$this->load->view('footer_view',$data);
+	}
 
+	// =========================
+	// EDIT BUKU
+	// =========================
+	public function bukuedit($id)
+	{
+		$data['idbo'] = $this->session->userdata('ses_id');
 
-        $this->data['title_web'] = 'Tambah Buku';
-        $this->load->view('header_view',$this->data);
-        $this->load->view('sidebar_view',$this->data);
-        $this->load->view('buku/tambah_view',$this->data);
-        $this->load->view('footer_view',$this->data);
+		$data['buku'] = $this->db->get_where('tbl_buku',['id_buku'=>$id])->row();
+		$data['kats'] = $this->db->get('tbl_kategori')->result_array();
+		$data['rakbuku'] = $this->db->get('tbl_rak')->result_array();
+		$data['title_web'] = 'Edit Buku';
+
+		$this->load->view('header_view',$data);
+		$this->load->view('sidebar_view',$data);
+		$this->load->view('buku/edit_view',$data);
+		$this->load->view('footer_view',$data);
 	}
 
 
 	public function prosesbuku()
 	{
-		if($this->session->userdata('masuk_perpus') != TRUE){
-			$url=base_url('login');
-			redirect($url);
-		}
-
-		// hapus aksi form proses buku
-		if(!empty($this->input->get('buku_id')))
+		// =====================
+		// HAPUS BUKU (FIX)
+		// =====================
+		if($this->input->get('buku_id'))
 		{
-        
-			$buku = $this->M_Admin->get_tableid_edit('tbl_buku','id_buku',htmlentities($this->input->get('buku_id')));
-			
-			$sampul = './assets/image/buku/'.$buku->sampul;
-			if(file_exists($sampul))
-			{
-				unlink($sampul);
+			$id = $this->input->get('buku_id');
+	
+			$buku = $this->db->get_where('tbl_buku', ['id_buku' => $id])->row();
+	
+			// hapus file sampul
+			if(!empty($buku->sampul) && file_exists('./assets_style/image/buku/'.$buku->sampul)){
+				unlink('./assets_style/image/buku/'.$buku->sampul);
 			}
-			
-			$lampiran = './assets/image/buku/'.$buku->lampiran;
-			if(file_exists($lampiran))
-			{
-				unlink($lampiran);
+	
+			// hapus file lampiran
+			if(!empty($buku->lampiran) && file_exists('./assets_style/image/buku/'.$buku->lampiran)){
+				unlink('./assets_style/image/buku/'.$buku->lampiran);
 			}
-			
-			$this->M_Admin->delete_table('tbl_buku','id_buku',$this->input->get('buku_id'));
-			
-			$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-warning">
-					<p> Berhasil Hapus Buku !</p>
-				</div></div>');
-			redirect(base_url('data'));  
-		}
-
-		// tambah aksi form proses buku
-		if(!empty($this->input->post('tambah')))
-		{
-			$post= $this->input->post();
-			$buku_id = $this->M_Admin->buat_kode('tbl_buku','BK','id_buku','ORDER BY id_buku DESC LIMIT 1'); 
-			$data = array(
-				'buku_id'=>$buku_id,
-				'id_kategori'=>htmlentities($post['kategori']), 
-				'id_rak' => htmlentities($post['rak']), 
-				'isbn' => htmlentities($post['isbn']), 
-				'title'  => htmlentities($post['title']), 
-				'pengarang'=> htmlentities($post['pengarang']), 
-				'penerbit'=> htmlentities($post['penerbit']),    
-				'thn_buku' => htmlentities($post['thn']), 
-				'isi' => $this->input->post('ket'), 
-				'jml'=> htmlentities($post['jml']),  
-				'tgl_masuk' => date('Y-m-d H:i:s')
+	
+			// hapus data dari database
+			$this->db->delete('tbl_buku', ['id_buku' => $id]);
+	
+			$this->session->set_flashdata(
+				'pesan',
+				'<div class="alert alert-success">Data buku berhasil dihapus.</div>'
 			);
-
-			$this->load->library('upload',$config);
-			if(!empty($_FILES['gambar']['name']))
-			{
-				// setting konfigurasi upload
-				$config['upload_path'] = './assets_style/image/buku/';
-				$config['allowed_types'] = 'gif|jpg|jpeg|png'; 
-				$config['encrypt_name'] = TRUE; //nama yang terupload nantinya
-				// load library upload
-				$this->load->library('upload',$config);
-				$this->upload->initialize($config);
-
-				if ($this->upload->do_upload('gambar')) {
-					$this->upload->data();
-					$file1 = array('upload_data' => $this->upload->data());
-					$this->db->set('sampul', $file1['upload_data']['file_name']);
-				}else{
-					$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-							<p> Edit Buku Gagal !</p>
-						</div></div>');
-					redirect(base_url('data')); 
-				}
-			}
-
-			if(!empty($_FILES['lampiran']['name']))
-			{
-				// setting konfigurasi upload
-				$config['upload_path'] = './assets_style/image/buku/';
-				$config['allowed_types'] = 'pdf'; 
-				$config['encrypt_name'] = TRUE; //nama yang terupload nantinya
-				// load library upload
-				$this->load->library('upload',$config);
-				$this->upload->initialize($config);
-				// script uplaod file kedua
-				if ($this->upload->do_upload('lampiran')) {
-					$this->upload->data();
-					$file2 = array('upload_data' => $this->upload->data());
-					$this->db->set('lampiran', $file2['upload_data']['file_name']);
-				}else{
-
-					$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-							<p> Edit Buku Gagal !</p>
-						</div></div>');
-					redirect(base_url('data')); 
-				}
-			}
-
-			$this->db->insert('tbl_buku', $data);
-
-			$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-			<p> Tambah Buku Sukses !</p>
-			</div></div>');
-			redirect(base_url('data')); 
+	
+			redirect('data');
 		}
-
-		// edit aksi form proses buku
-		if(!empty($this->input->post('edit')))
+	
+		// =====================
+		// KONFIG UPLOAD
+		// =====================
+		$config['upload_path']  = './assets_style/image/buku/';
+		$config['encrypt_name'] = TRUE;
+		$config['max_size']     = 5000;
+	
+		$this->load->library('upload');
+	
+		// =====================
+		// TAMBAH BUKU
+		// =====================
+		if($this->input->post('tambah'))
 		{
 			$post = $this->input->post();
+	
 			$data = array(
-				'id_kategori'=>htmlentities($post['kategori']), 
-				'id_rak' => htmlentities($post['rak']), 
-				'isbn' => htmlentities($post['isbn']), 
-				'title'  => htmlentities($post['title']),
-				'pengarang'=> htmlentities($post['pengarang']), 
-				'penerbit'=> htmlentities($post['penerbit']),  
-				'thn_buku' => htmlentities($post['thn']), 
-				'isi' => $this->input->post('ket'), 
-				'jml'=> htmlentities($post['jml']),  
-				'tgl_masuk' => date('Y-m-d H:i:s')
+				'buku_id'     => $this->M_Admin->buat_kode('tbl_buku','BK','id_buku','ORDER BY id_buku DESC LIMIT 1'),
+				'id_kategori' => $post['kategori'],
+				'id_rak'      => $post['rak'],
+				'isbn'        => $post['isbn'],
+				'title'       => $post['title'],
+				'pengarang'   => $post['pengarang'],
+				'penerbit'    => $post['penerbit'],
+				'thn_buku'    => $post['thn'],
+				'isi'         => $post['ket'],
+				'jml'         => $post['jml'],
+				'tgl_masuk'   => date('Y-m-d H:i:s')
 			);
-
+	
+			// upload gambar
 			if(!empty($_FILES['gambar']['name']))
 			{
-				// setting konfigurasi upload
-				$config['upload_path'] = './assets_style/image/buku/';
-				$config['allowed_types'] = 'gif|jpg|jpeg|png'; 
-				$config['encrypt_name'] = TRUE; //nama yang terupload nantinya
-				// load library upload
-				$this->load->library('upload',$config);
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
 				$this->upload->initialize($config);
-
-				if ($this->upload->do_upload('gambar')) {
-					$this->upload->data();
-					$gambar = './assets/image/buku/'.htmlentities($post['gmbr']);
-					if(file_exists($gambar)) {
-						unlink($gambar);
-					}
-					$file1 = array('upload_data' => $this->upload->data());
-					$this->db->set('sampul', $file1['upload_data']['file_name']);
-				}else{
-					$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-							<p> Edit Buku Gagal !</p>
-						</div></div>');
-					redirect(base_url('data')); 
+	
+				if($this->upload->do_upload('gambar'))
+				{
+					$file = $this->upload->data();
+					$data['sampul'] = $file['file_name'];
 				}
 			}
-
+	
+			// upload lampiran
 			if(!empty($_FILES['lampiran']['name']))
 			{
-				// setting konfigurasi upload
-				$config['upload_path'] = './assets_style/image/buku/';
-				$config['allowed_types'] = 'pdf'; 
-				$config['encrypt_name'] = TRUE; //nama yang terupload nantinya
-				// load library upload
-				$this->load->library('upload',$config);
+				$config['allowed_types'] = 'pdf';
 				$this->upload->initialize($config);
-				// script uplaod file kedua
-				if ($this->upload->do_upload('lampiran')) {
-					$this->upload->data();
-					$lampiran = './assets_style/image/buku/'.htmlentities($post['lamp']);
-					if(file_exists($lampiran)) {
-						unlink($lampiran);
-					}
-					$file2 = array('upload_data' => $this->upload->data());
-					$this->db->set('lampiran', $file2['upload_data']['file_name']);
-				}else{
-
-					$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-							<p> Edit Buku Gagal !</p>
-						</div></div>');
-					redirect(base_url('data')); 
+	
+				if($this->upload->do_upload('lampiran'))
+				{
+					$file = $this->upload->data();
+					$data['lampiran'] = $file['file_name'];
 				}
 			}
-
-			$this->db->where('id_buku',htmlentities($post['edit']));
+	
+			$this->db->insert('tbl_buku', $data);
+	
+			redirect('data');
+		}
+	
+		// =====================
+		// EDIT BUKU
+		// =====================
+		if($this->input->post('edit'))
+		{
+			$post = $this->input->post();
+			$id   = $post['edit'];
+	
+			$data = array(
+				'id_kategori' => $post['kategori'],
+				'id_rak'      => $post['rak'],
+				'isbn'        => $post['isbn'],
+				'title'       => $post['title'],
+				'pengarang'   => $post['pengarang'],
+				'penerbit'    => $post['penerbit'],
+				'thn_buku'    => $post['thn'],
+				'isi'         => $post['ket'],
+				'jml'         => $post['jml']
+			);
+	
+			$buku = $this->db->get_where('tbl_buku', ['id_buku' => $id])->row();
+	
+			// upload sampul baru
+			if(!empty($_FILES['gambar']['name']))
+			{
+				$config['allowed_types'] = 'jpg|jpeg|png|gif';
+				$this->upload->initialize($config);
+	
+				if($this->upload->do_upload('gambar'))
+				{
+					$file = $this->upload->data();
+	
+					if(!empty($buku->sampul)){
+						unlink('./assets_style/image/buku/'.$buku->sampul);
+					}
+	
+					$data['sampul'] = $file['file_name'];
+				}
+			}
+	
+			// upload lampiran baru
+			if(!empty($_FILES['lampiran']['name']))
+			{
+				$config['allowed_types'] = 'pdf';
+				$this->upload->initialize($config);
+	
+				if($this->upload->do_upload('lampiran'))
+				{
+					$file = $this->upload->data();
+	
+					if(!empty($buku->lampiran)){
+						unlink('./assets_style/image/buku/'.$buku->lampiran);
+					}
+	
+					$data['lampiran'] = $file['file_name'];
+				}
+			}
+	
+			$this->db->where('id_buku', $id);
 			$this->db->update('tbl_buku', $data);
-
-			$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-success">
-					<p> Edit Buku Sukses !</p>
-				</div></div>');
-			redirect(base_url('data/bukuedit/'.$post['edit'])); 
+	
+			redirect('data');
 		}
 	}
 
@@ -353,7 +309,7 @@ class Data extends CI_Controller {
 			redirect(base_url('data/kategori')); 
 		}
 	}
-	
+
 	public function rak()
 	{
 		
@@ -397,7 +353,7 @@ class Data extends CI_Controller {
 		}
 
 		if(!empty($this->input->post('edit')))
-		{
+		{ 
 			$post= $this->input->post();
 			$data = array(
 				'nama_rak'=>htmlentities($post['rak']),
@@ -436,8 +392,6 @@ class Data extends CI_Controller {
 		$this->load->view('footer_view', $this->data);
 	}
 	
-	
-	
 	public function kegiatan_tambah()
 	{
 		$this->data['idbo'] = $this->session->userdata('ses_id');
@@ -448,6 +402,7 @@ class Data extends CI_Controller {
 		$this->load->view('kegiatan/tambah', $this->data);
 		$this->load->view('footer_view', $this->data);
 	}
+
 
 	public function kegiatan_edit($id)
 	{
@@ -474,7 +429,7 @@ class Data extends CI_Controller {
 			$post = $this->input->post();
 	
 			// Siapkan upload config
-			$config['upload_path'] = './assets_style/image/';
+			$config['upload_path'] = './assets_style/image/kegiatan/';
 			$config['allowed_types'] = 'jpg|jpeg|png|gif';
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
@@ -515,7 +470,7 @@ class Data extends CI_Controller {
 	
 			// Jika upload foto baru
 			if (!empty($_FILES['foto']['name'])) {
-				$config['upload_path'] = './assets_style/image/';
+				$config['upload_path'] = './assets_style/image/kegiatan/';
 				$config['allowed_types'] = 'jpg|jpeg|png|gif';
 				$config['encrypt_name'] = TRUE;
 	
@@ -526,8 +481,8 @@ class Data extends CI_Controller {
 	
 					// Hapus gambar lama
 					$kegiatan = $this->M_Admin->get_tableid_edit('tbl_kegiatan', 'id_kegiatan', $id);
-					if (!empty($kegiatan->gambar) && file_exists('./assets_style/image/' . $kegiatan->gambar)) {
-						unlink('./assets_style/image/' . $kegiatan->gambar);
+					if (!empty($kegiatan->gambar) && file_exists('./assets_style/image/kegiatan' . $kegiatan->gambar)) {
+						unlink('./assets_style/image/kegiatan' . $kegiatan->gambar);
 					}
 	
 					$data['gambar'] = $file['file_name'];
@@ -549,8 +504,8 @@ class Data extends CI_Controller {
 			$id = $this->input->get('hapus');
 			$kegiatan = $this->M_Admin->get_tableid_edit('tbl_kegiatan', 'id_kegiatan', $id);
 	
-			if (!empty($kegiatan->gambar) && file_exists('./assets_style/image/'.$kegiatan->gambar)) {
-				unlink('./assets_style/image/'.$kegiatan->gambar);
+			if (!empty($kegiatan->gambar) && file_exists('./assets_style/image/kegiatan'.$kegiatan->gambar)) {
+				unlink('./assets_style/image/kegiatan/'.$kegiatan->gambar);
 			}
 	
 			$this->db->where('id_kegiatan', $id);
@@ -558,5 +513,121 @@ class Data extends CI_Controller {
 			$this->session->set_flashdata('pesan','<div class="alert alert-warning">Hapus kegiatan sukses!</div>');
 			redirect(base_url('data/kegiatan'));
 		}
-	}	
+	}
+	
+		// ================= AGENDA =================
+		public function agenda()
+		{
+			$this->data['idbo'] = $this->session->userdata('ses_id');
+			$this->data['agenda'] = $this->db->query("SELECT * FROM tbl_agenda ORDER BY id_agenda DESC");
+
+			$this->data['title_web'] = 'Data Agenda';
+			$this->load->view('header_view', $this->data);
+			$this->load->view('sidebar_view', $this->data);
+			$this->load->view('agenda/agenda_view', $this->data);
+			$this->load->view('footer_view', $this->data);
+		}
+
+		public function agenda_tambah()
+		{
+			// hanya Petugas yang bisa akses
+			if ($this->session->userdata('level') != 'Petugas') {
+				$this->session->set_flashdata('pesan','<div class="alert alert-danger">Akses ditolak!</div>');
+				redirect('data/agenda');
+			}
+
+			$this->data['idbo'] = $this->session->userdata('ses_id');
+			$this->data['title_web'] = 'Tambah Agenda';
+			$this->load->view('header_view', $this->data);
+			$this->load->view('sidebar_view', $this->data);
+			$this->load->view('agenda/tambah', $this->data);
+			$this->load->view('footer_view', $this->data);
+		}
+
+
+		public function agenda_edit($id)
+		{
+			// hanya Petugas yang bisa akses
+			if ($this->session->userdata('level') != 'Petugas') {
+				$this->session->set_flashdata('pesan','<div class="alert alert-danger">Akses ditolak!</div>');
+				redirect('data/agenda');
+			}
+
+			$this->data['idbo'] = $this->session->userdata('ses_id');
+			$count = $this->M_Admin->CountTableId('tbl_agenda', 'id_agenda', $id);
+			if ($count > 0) {
+				$this->data['edit_agenda'] = $this->db->get_where('tbl_agenda', ['id_agenda' => $id])->row();
+			} else {
+				echo '<script>alert("AGENDA TIDAK DITEMUKAN");window.location="'.base_url('data/agenda').'"</script>';
+			}
+
+			$this->data['title_web'] = 'Edit Agenda';
+			$this->load->view('header_view', $this->data);
+			$this->load->view('sidebar_view', $this->data);
+			$this->load->view('agenda/edit', $this->data);
+			$this->load->view('footer_view', $this->data);
+		}
+
+		public function agenda_proses()
+		{
+			if ($this->session->userdata('level') != 'Petugas') {
+				$this->session->set_flashdata('pesan','<div class="alert alert-danger">Akses ditolak!</div>');
+				return redirect('data/agenda');
+			}
+		
+			if ($this->input->post('tambah')) {
+		
+				$data = [
+					'judul'     => $this->input->post('judul', TRUE),
+					'deskripsi' => $this->input->post('deskripsi', TRUE),
+					'tgl'       => $this->input->post('tanggal', TRUE)
+				];
+		
+				$this->db->insert('tbl_agenda', $data);
+		
+				$this->session->set_flashdata(
+					'pesan',
+					'<div class="alert alert-success">Tambah agenda berhasil!</div>'
+				);
+		
+				return redirect('data/agenda');
+			}
+		
+			if ($this->input->post('edit') !== null) {
+
+				$id = (int) $this->input->post('edit');
+			
+				$data = [
+					'judul'     => $this->input->post('judul', TRUE),
+					'deskripsi' => $this->input->post('deskripsi', FALSE),
+					'tgl'       => $this->input->post('tanggal', TRUE)
+				];
+			
+				$this->db->where('id_agenda', $id);
+				$this->db->update('tbl_agenda', $data);
+			
+				$this->session->set_flashdata('pesan',
+					'<div class="alert alert-success">Edit agenda berhasil!</div>'
+				);
+			
+				redirect('data/agenda');
+			}
+		
+			if ($this->input->get('hapus')) {
+		
+				$id = $this->input->get('hapus', TRUE);
+		
+				$this->db->where('id_agenda', $id);
+				$this->db->delete('tbl_agenda');
+		
+				$this->session->set_flashdata(
+					'pesan',
+					'<div class="alert alert-warning">Hapus agenda berhasil!</div>'
+				);
+		
+				return redirect('data/agenda');
+			}
+		
+			return redirect('data/agenda');
+		}
 }

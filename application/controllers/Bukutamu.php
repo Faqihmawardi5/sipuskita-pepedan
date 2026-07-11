@@ -17,7 +17,9 @@ class Bukutamu extends CI_Controller {
 
         // Ambil semua data pengunjung (dari tabel pengunjung)
         $data['tamu'] = $this->Bukutamu_model->get_all();
+
         $this->load->view('pengunjung/buku_tamu', $data);
+        $this->load->view('frontend/footer', $data);
     
     }
 
@@ -25,11 +27,12 @@ class Bukutamu extends CI_Controller {
     public function simpan()
     {
         $data = [
-            'nama' => $this->input->post('nama', true),
-            'alamat' => $this->input->post('alamat', true),
-            'keperluan' => $this->input->post('keperluan', true),
-            'tanggal_kunjungan' => date('Y-m-d'),
-            'waktu_kunjungan' => date('H:i:s')
+            'nama'               => $this->input->post('nama'),
+            'jk'                 => $this->input->post('jk'),
+            'alamat'             => $this->input->post('alamat'),
+            'keperluan'          => $this->input->post('keperluan'),
+            'tanggal_kunjungan'  => date('Y-m-d'),
+            'waktu_kunjungan'    => date('H:i:s')
         ];
 
         $this->Bukutamu_model->insert($data);

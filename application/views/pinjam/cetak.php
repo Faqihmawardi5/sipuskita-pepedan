@@ -6,14 +6,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-size: 11px;
         }
-        .kop {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .kop h2 {
-            margin: 0;
-        }
+
         .info-table, .buku-table {
             width: 100%;
             border-collapse: collapse;
@@ -36,12 +31,6 @@
 </head>
 <body onload="window.print()">
 
-<div class="kop">
-    <h2>PERPUSTAKAAN DESA PEPEDAN</h2>
-    <p><strong>Detail Transaksi Peminjaman Buku</strong></p>
-    <hr>
-</div>
-
 <table class="info-table">
     <tr>
         <th>No Peminjaman</th>
@@ -52,7 +41,7 @@
         <td><?= $pinjam->tgl_pinjam; ?></td>
     </tr>
     <tr>
-        <th>Tgl Pengembalian</th>
+        <th>Tgl Harus Kembali</th>
         <td><?= $pinjam->tgl_balik; ?></td>
     </tr>
     <tr>
@@ -63,7 +52,6 @@
             if ($user) {
                 echo $user->nama . ' (' . $user->anggota_id . ')<br>';
                 echo 'Telepon: ' . $user->telepon . '<br>';
-                echo 'Email: ' . $user->email . '<br>';
                 echo 'Alamat: ' . $user->alamat;
             } else {
                 echo 'Data anggota tidak ditemukan.';
@@ -75,40 +63,12 @@
         <th>Status</th>
         <td><?= $pinjam->status; ?></td>
     </tr>
-    <tr>
-        <th>Tgl Kembali</th>
-        <td><?= ($pinjam->tgl_kembali == '0') ? 'Belum dikembalikan' : $pinjam->tgl_kembali; ?></td>
-    </tr>
-    <tr>
         <th>Lama Peminjaman</th>
         <td><?= $pinjam->lama_pinjam; ?> Hari</td>
     </tr>
-    <tr>
-        <th>Denda</th>
-        <td>
-            <?php
-            $denda = $this->db->query("SELECT * FROM tbl_denda WHERE pinjam_id = '$pinjam->pinjam_id'")->row();
-            if ($pinjam->status == 'Di Kembalikan') {
-                echo $this->M_Admin->rp($denda->denda);
-            } else {
-                $jml = $this->db->query("SELECT * FROM tbl_pinjam WHERE pinjam_id = '$pinjam->pinjam_id'")->num_rows();
-                $date1 = date('Ymd');
-                $date2 = preg_replace('/[^0-9]/','',$pinjam->tgl_balik);
-                $diff = $date1 - $date2;
-                if ($diff > 0) {
-                    $dd = $this->M_Admin->get_tableid_edit('tbl_biaya_denda','stat','Aktif');
-                    echo $diff.' hari<br>';
-                    echo 'Denda: '.$this->M_Admin->rp($jml * ($dd->harga_denda * $diff));
-                } else {
-                    echo 'Tidak Ada Denda';
-                }
-            }
-            ?>
-        </td>
-    </tr>
 </table>
 
-<h4>Daftar Buku</h4>
+<h4>Buku yang dipinjam</h4>
 <table class="buku-table">
     <thead>
         <tr>

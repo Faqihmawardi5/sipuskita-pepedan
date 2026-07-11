@@ -60,7 +60,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                                <div class="form-group">
+                                <div class="form-group">b
                                     <label>Jumlah Buku</label>
                                     <input type="number" class="form-control" name="jml" placeholder="Jumlah buku : 12">
                                 </div>

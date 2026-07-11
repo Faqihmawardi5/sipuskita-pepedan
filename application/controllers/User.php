@@ -6,7 +6,7 @@ class User extends CI_Controller {
 	 parent::__construct();
 	 	//validasi jika user belum login
      $this->data['CI'] =& get_instance();
-     $this->load->helper(array('form', 'url'));
+     $this->load->helper(array('form', 'url', 'tanggal'));
      $this->load->model('M_Admin');
      	if($this->session->userdata('masuk_perpus') != TRUE){
 			$url=base_url('login');
@@ -41,7 +41,26 @@ class User extends CI_Controller {
     public function add()
     {
 		// format tabel / kode baru 3 hurup / id tabel / order by limit ngambil data terakhir
-		$id = $this->M_Admin->buat_kode('tbl_login','PPD.25.','id_login','ORDER BY id_login DESC LIMIT 1'); 
+		// 🔥 AUTO NIA (PPD2026001)
+		$tahun = date('Y');
+
+		$q = $this->db->query("
+			SELECT MAX(RIGHT(anggota_id,3)) as kode 
+			FROM tbl_login 
+			WHERE anggota_id LIKE 'PPD$tahun%'
+		");
+	
+		$hasil = $q->row();
+	
+		if($hasil->kode){
+			$no = intval($hasil->kode) + 1;
+		}else{
+			$no = 1;
+		}
+	
+		$kode = str_pad($no, 3, "0", STR_PAD_LEFT);
+		$id = "PPD".$tahun.$kode;
+		
         $nama = htmlentities($this->input->post('nama',TRUE));
         $user = htmlentities($this->input->post('user',TRUE));
         $pass = md5(htmlentities($this->input->post('pass',TRUE)));
@@ -304,17 +323,25 @@ class User extends CI_Controller {
 			}
 		}
     }
-    public function del()
-    {
-        if($this->uri->segment('3') == ''){ echo '<script>alert("halaman tidak ditemukan");window.location="'.base_url('user').'";</script>';}
-        
-        $user = $this->M_Admin->get_tableid_edit('tbl_login','id_login',$this->uri->segment('3'));
-        unlink('./assets_style/image/'.$user->foto);
-		$this->M_Admin->delete_table('tbl_login','id_login',$this->uri->segment('3'));
-		
-		$this->session->set_flashdata('pesan','<div id="notifikasi"><div class="alert alert-warning">
-		<p> Berhasil Hapus User !</p>
-		</div></div>');
-		redirect(base_url('user'));  
-    }
+	public function del()
+	{
+		$id = $this->uri->segment(3);
+	
+		if(!$id){
+			redirect(base_url('user'));
+		}
+	
+		$user = $this->M_Admin->get_tableid_edit('tbl_login','id_login',$id);
+	
+		if($user){
+			if(!empty($user->foto) && file_exists('./assets_style/image/'.$user->foto)){
+				unlink('./assets_style/image/'.$user->foto);
+			}
+	
+			$this->M_Admin->delete_table('tbl_login','id_login',$id);
+		}
+	
+		$this->session->set_flashdata('pesan','<div class="alert alert-warning">User berhasil dihapus</div>');
+		redirect(base_url('user'));
+	}
 }

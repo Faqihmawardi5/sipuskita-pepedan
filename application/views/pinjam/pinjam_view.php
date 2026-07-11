@@ -90,10 +90,17 @@
 												<i class="fa fa-check"></i> Dikembalikan</a>
 										<?php }?>
 										<a href="<?= base_url('transaksi/detailpinjam/'.$isi['pinjam_id'].'?pinjam=yes');?>" class="btn btn-primary btn-sm" title="detail pinjam"><i class="fa fa-eye"></i></button></a>
-										<a href="<?= base_url('transaksi/prosespinjam?pinjam_id='.$isi['pinjam_id']);?>" 
-											onclick="return confirm('Anda yakin Peminjaman Ini akan dihapus ?');" 
-											class="btn btn-danger btn-sm" title="hapus pinjam">
-											<i class="fa fa-trash"></i></a>
+										<form action="<?= base_url('transaksi/prosespinjam') ?>" method="post" style="display:inline;">
+											<input type="hidden" name="hapus" value="1">
+											<input type="hidden" name="pinjam_id" value="<?= $isi['pinjam_id']; ?>">
+
+											<button type="submit"
+												class="btn btn-danger btn-sm"
+												onclick="return confirm('Anda yakin peminjaman ini akan dihapus?');"
+												title="hapus pinjam">
+												<i class="fa fa-trash"></i>
+											</button>
+										</form>
 									<?php }else{?>
 										<a href="<?= base_url('transaksi/detailpinjam/'.$isi['pinjam_id']);?>" 
 											class="btn btn-primary btn-sm" title="detail pinjam">

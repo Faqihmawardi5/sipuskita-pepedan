@@ -23,13 +23,13 @@
         <!-- Logo dan Judul -->
         <a class="navbar-brand d-flex align-items-center" href="<?= base_url('') ?>">
         <img src="<?= base_url('assets_style/image/logo_desa.png') ?>" alt="Logo Desa" style="width:30px; height:30px;" class="me-2">
-        SIPUSKITA
+        <b>SIPUSKITA</b>
         </a>
 
         <!-- Marquee -->
         <div class="d-none d-lg-block" style="max-width: 400px; overflow:hidden;">
         <marquee behavior="scroll" direction="left" scrollamount="5" class="text-light">
-            Sistem Informasi Perpustakaan Pustaka Kita Desa Pepedan
+            <b>PERPUSTAKAAN PUSTAKA KITA DESA PEPEDAN NPP: 3329063D0000009</b>
         </marquee>
         </div>
 
@@ -49,7 +49,10 @@
             <a class="nav-link text-light" href="#tentang">Tentang</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link text-light" href="<?= base_url('koleksi') ?>">Koleksi Buku</a>
+                <a class="nav-link active" href="<?= base_url('koleksi') ?>">Koleksi Buku</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light active" href="<?= base_url('agenda') ?>">Agenda</a>
             </li>
             <li class="nav-item">
             <a class="nav-link text-light" href="<?= base_url('bukutamu') ?>">Buku Tamu</a>
@@ -66,9 +69,9 @@
     <header class="masthead slideshow-header d-flex align-items-center justify-content-center">
         <div class="overlay"></div> <!-- Optional overlay for better readability -->
         <div class="container text-white text-center position-relative z-index-1">
-            <h1 class="mb-4">Selamat Datang</h1>
-            <h3>Di Sistem Informasi Perpustakaan Pustaka Kita Desa Pepedan</h3>
-            <p class="lead">Temukan koleksi buku terbaik untuk Anda baca dan pelajari.</p>
+            <h1 class="mb-4">Selamat Datang di SIPUSKITA</h1>
+            <h3>Sistem Informasi Perpustakaan Pustaka Kita Desa Pepedan</h3>
+            <p class="lead">Mari membaca, belajar, dan tumbuh bersama melalui koleksi buku terbaik untuk semua kalangan.</p>
             <a href="<?= base_url('koleksi') ?>" class="btn btn-primary btn-lg mt-3">Koleksi Buku</a>
         </div>
     </header>
@@ -78,9 +81,7 @@
         <div class="container">
             <h2 class="mb-4">Tentang SIPUSKITA Desa Pepedan</h2>
             <p class="lead mb-5">
-                SIPUSKITA adalah Sistem Informasi Perpustakaan Desa Pepedan yang menyediakan kemudahan 
-                dalam mencari, meminjam, dan mengelola koleksi buku. Dengan sistem ini, masyarakat dapat 
-                mengakses informasi buku kapan saja dan di mana saja.
+            SIPUSKITA merupakan sistem informasi perpustakaan Desa Pepedan yang dirancang untuk memberikan kemudahan dalam mencari, meminjam, dan mengelola koleksi buku. Melalui sistem ini, masyarakat dapat mengakses berbagai informasi buku secara cepat, praktis, dan dapat dilakukan kapan saja serta di mana saja.
             </p>
             <div class="row">
                 <div class="col-lg-4">
@@ -113,26 +114,91 @@
             </div>
         </div>
     </section>
-    
-    <!-- Dokumentasi Kegiatan -->
-    <section class="bg-light py-5" id="dokumentasi">
-        <div class="container text-center">
-            <h3 class="mb-4">Dokumentasi Kegiatan Perpustakaan</h3>
-            <p class="mb-5">Berikut beberapa dokumentasi kegiatan literasi, pelatihan, dan layanan perpustakaan.</p>
-            <div class="row">
-                <?php if (!empty($kegiatan)): ?>
-                    <?php foreach($kegiatan as $row): ?>
-                        <div class="col-md-4 mb-4">
-                            <img src="<?= base_url('assets_style/image/kegiatan/'.$row->gambar) ?>" alt="<?= $row->judul ?>" class="img-fluid rounded shadow-sm" style="height: 200px; object-fit: cover;">
-                            <p class="mt-2"><?= $row->judul ?></p>
+
+<!-- Statistik Pengunjung -->
+<section class="stats-section text-center py-5" style="background: linear-gradient(90deg, #e0f7fa 0%, #80deea 100%);">
+    <div class="container">
+        <h3 class="mb-5 fw-bold">Statistik Pengunjung</h3>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stat-item p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-people-fill fs-1 text-primary mb-2"></i>
+                    <h4 class="counter"><?= $pengunjung_hari_ini ?></h4>
+                    <p class="text-muted">Pengunjung Hari Ini</p>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-item p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-calendar-month-fill fs-1 text-info mb-1"></i>
+                    <h4 class="counter"><?=$pengunjung_bulan_ini ?></h4>
+                    <p class="text-muted">Pengunjung Bulan Ini</p>
+                </div>
+            </div>        
+
+            <div class="col-md-3">
+                <div class="stat-item p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-person-check-fill fs-1 text-success mb-2"></i>
+                    <h4 class="counter"><?= $total_pengunjung ?></h4>
+                    <p class="text-muted">Total Pengunjung</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item p-4 bg-white rounded shadow-sm hover-shadow">
+                    <i class="bi bi-journal-bookmark-fill fs-1 text-warning mb-2"></i>
+                    <h4 class="counter"><?= $total_koleksi ?></h4>
+                    <p class="text-muted">Total Koleksi Buku</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dokumentasi Kegiatan -->  
+<section class="bg-light py-5" id="dokumentasi">  
+    <div class="container">  
+        
+        <div class="text-center mb-5">
+            <h3 class="fw-bold">GALERI KEGIATAN</h3>  
+            <p class="text-muted">
+                Dokumentasi kegiatan literasi, pelatihan, dan layanan perpustakaan
+            </p>  
+        </div>
+
+        <div class="row g-4">  
+            <?php if (!empty($kegiatan)): ?>  
+                <?php foreach($kegiatan as $row): ?>  
+                    
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card border-0 shadow-sm h-100 galeri-card">
+                            
+                            <!-- Gambar -->
+                            <div class="galeri-img-wrapper">
+                                <img src="<?= base_url('assets_style/image/kegiatan/'.$row->gambar) ?>" 
+                                     alt="<?= $row->judul ?>" 
+                                     class="card-img-top galeri-img">
+                            </div>
+
+                            <!-- Konten -->
+                            <div class="card-body text-center">
+                                <h6 class="fw-semibold mb-1">
+                                    <?= $row->judul ?>
+                                </h6>
+                            </div>
+
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="col-12">
-                        <p>Belum ada dokumentasi kegiatan.</p>
                     </div>
-                <?php endif; ?>
-    </section>
+
+                <?php endforeach; ?>  
+            <?php else: ?>  
+                <div class="col-12 text-center">  
+                    <p class="text-muted">Belum ada dokumentasi kegiatan.</p>  
+                </div>  
+            <?php endif; ?>  
+        </div>  
+
+    </div>  
+</section>
 
     <!-- Footer -->
     <footer class="footer text-light" style="background-color: #0000ff; padding: 40px 0;">
@@ -173,6 +239,31 @@
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= base_url('assets/landing/js/scripts.js') ?>"></script>
+    <script>
+    // Animasi counter naik
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.innerText;
+                let count = 0;
+                const increment = target / 100; // 100 step
+
+                const animate = () => {
+                    count += increment;
+                    if(count < target) {
+                        counter.innerText = Math.ceil(count);
+                        requestAnimationFrame(animate);
+                    } else {
+                        counter.innerText = target;
+                    }
+                }
+                animate();
+            }
+            updateCount();
+        });
+    });
+    </script>
 </body>
 
 </html>

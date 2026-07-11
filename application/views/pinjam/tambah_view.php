@@ -17,90 +17,138 @@
                 </div>
 			    <!-- /.box-header -->
 			    <div class="box-body">
-                    <form action="<?php echo base_url('transaksi/prosespinjam');?>" method="POST" enctype="multipart/form-data">
-						
-						<div class="row">
-							<div class="col-sm-5">
-								<table class="table table-striped">
-									<tr style="background:yellowgreen">
-										<td colspan="3">Data Transaksi</td>
-									</tr>
-									<tr>
-										<td>No Peminjaman</td>
-										<td>:</td>
-										<td>
-											<input type="text" name="nopinjam" value="<?= $nop;?>" readonly class="form-control">
-										</td>
-									</tr>
-									<tr>
-										<td>Tgl Peminjaman</td>
-										<td>:</td>
-										<td>
-											<input type="date" value="<?= date('Y-m-d');?>" name="tgl" class="form-control">
-										</td>
-									</tr>
-									<tr>
-										<td>ID Anggota</td>
-										<td>:</td>
-										<td>
-											<div class="input-group">
-												<input type="text" class="form-control" required autocomplete="off" name="anggota_id" id="search-box" placeholder="Contoh ID Anggota : AG001" type="text" value="">
-												<span class="input-group-btn">
-													<a data-toggle="modal" data-target="#TableAnggota" class="btn btn-primary"><i class="fa fa-search"></i></a>
-												</span>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>Biodata</td>
-										<td>:</td>
-										<td>
-											<div id="result_tunggu"> <p style="color:red">* Belum Ada Hasil</p></div>
-											<div id="result"></div>
-										</td>
-									</tr>
-									<tr>
-										<td>Lama Peminjaman</td>
-										<td>:</td>
-										<td>
-											<input type="number" required placeholder="Lama Pinjam Contoh : 2 Hari (2)" name="lama" class="form-control">
-										</td>
-									</tr>
-								</table>
-							</div>
-							<div class="col-sm-7">
-								<table class="table table-striped">
-									<tr style="background:yellowgreen">
-										<td colspan="3">Pinjam Buku</td>
-									</tr>
-									<tr>
-										<td>Kode Buku</td>
-										<td>:</td>
-										<td>
-											<div class="input-group">
-												<input type="text" class="form-control" autocomplete="off" name="buku_id" id="buku-search" placeholder="Contoh ID Buku : BK001" type="text" value="">
-												<span class="input-group-btn">
-													<a data-toggle="modal" data-target="#TableBuku" class="btn btn-primary"><i class="fa fa-search"></i></a>
-												</span>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>Data Buku</td>
-										<td>:</td>
-										<td>
-											<div id="result_tunggu_buku"> <p style="color:red">* Belum Ada Hasil</p></div>
-											<div id="result_buku"></div>
-										</td>
-									</tr>
-								</table>
-							</div>
-						</div>
-                        <div class="pull-right">
+				<form action="<?= base_url('transaksi/prosespinjam');?>" method="POST">
 							<input type="hidden" name="tambah" value="tambah">
-                            <button type="submit" class="btn btn-primary btn-md">Submit</button> 
-                    </form>
-							<a href="<?= base_url('transaksi');?>" class="btn btn-danger btn-md">Kembali</a>
+							<table class="table table-striped">
+								<tr style="background:yellowgreen">
+									<td colspan="3">Data Transaksi</td>
+								</tr>
+
+								<tr>
+									<td>No Peminjaman</td>
+									<td>:</td>
+									<td>
+										<input type="text"
+											name="nopinjam"
+											value="<?= $nop;?>"
+											class="form-control"
+											readonly
+											required>
+									</td>
+								</tr>
+
+								<tr>
+									<td>Tgl Peminjaman</td>
+									<td>:</td>
+									<td>
+										<input type="date"
+											value="<?= date('Y-m-d');?>"
+											name="tgl"
+											class="form-control"
+											required>
+									</td>
+								</tr>
+
+								<tr>
+									<td>ID Anggota</td>
+									<td>:</td>
+									<td>
+										<div class="input-group">
+											<input type="text"
+												class="form-control"
+												name="anggota_id"
+												id="search-box"
+												autocomplete="off"
+												placeholder="Contoh ID Anggota : AG001"
+												required>
+
+											<span class="input-group-btn">
+												<a data-toggle="modal"
+												data-target="#TableAnggota"
+												class="btn btn-primary">
+													<i class="fa fa-search"></i>
+												</a>
+											</span>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>Biodata</td>
+									<td>:</td>
+									<td>
+										<div id="result_tunggu">
+											<p style="color:red">* Belum Ada Hasil</p>
+										</div>
+										<div id="result"></div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>Lama Peminjaman</td>
+									<td>:</td>
+									<td>
+										<input type="number"
+											name="lama"
+											class="form-control"
+											min="1"
+											placeholder="Contoh : 2 Hari"
+											required>
+									</td>
+								</tr>
+							</table>
+
+							<table class="table table-striped">
+								<tr style="background:yellowgreen">
+									<td colspan="3">Pinjam Buku</td>
+								</tr>
+
+								<tr>
+									<td>Kode Buku</td>
+									<td>:</td>
+									<td>
+										<div class="input-group">
+											<input type="text"
+												class="form-control"
+												name="buku_id"
+												id="buku-search"
+												autocomplete="off"
+												placeholder="Contoh ID Buku : BK001"
+												required>
+
+											<span class="input-group-btn">
+												<a data-toggle="modal"
+												data-target="#TableBuku"
+												class="btn btn-primary">
+													<i class="fa fa-search"></i>
+												</a>
+											</span>
+										</div>
+									</td>
+								</tr>
+
+								<tr>
+									<td>Data Buku</td>
+									<td>:</td>
+									<td>
+										<div id="result_tunggu_buku">
+											<p style="color:red">* Belum Ada Hasil</p>
+										</div>
+										<div id="result_buku"></div>
+									</td>
+								</tr>
+							</table>
+
+							<div class="box-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+								<a href="<?= base_url('transaksi');?>" class="btn btn-danger">
+									<i class="fa fa-arrow-left"></i> Kembali
+								</a>
+								<button type="submit" class="btn btn-primary">
+									<i class="fa fa-save"></i> Submit
+								</button>
+							</div>
+
+							</form>
 						</div>
 		        </div>
 	        </div>

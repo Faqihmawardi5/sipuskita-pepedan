@@ -79,14 +79,14 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li>
-            <?php
-              $d = $this->db->query("SELECT * FROM tbl_login WHERE id_login = '$idbo'")->row();
-             ?>
+          <?php if (isset($idbo)) { 
+                $d = $this->db->query("SELECT * FROM tbl_login WHERE id_login = '$idbo'")->row();
+            } ?>
             <a href="<?= base_url('user/edit/'.$idbo);?>">
               Welcome , <i class="fa fa-edit"> </i> <?php echo $d->nama; echo ' | ( '.$d->level.' )'; ?></a>
           </li>
           <li>
-            <a href="<?php echo base_url();?>login/logout">Sign out</a>
+            <a href="<?php echo base_url();?>home">Sign out</a>
           </li>
           <!-- Control Sidebar Toggle Button 
           <li>

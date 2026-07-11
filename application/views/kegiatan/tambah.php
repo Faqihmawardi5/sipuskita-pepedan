@@ -29,9 +29,9 @@
                         <input type="file" name="foto" class="form-control" accept="image/*">
                     </div>
                 </div>
-                <div class="box-footer">
-                    <button type="submit" class="btn btn-success btn-block">Simpan</button>
-                    <a href="<?= base_url('data/kegiatan') ?>" class="btn btn-default btn-block">Kembali</a>
+                <div class="box-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <a href="<?= base_url('data/kegiatan') ?>" class="btn btn-danger"><i class="fa fa-arrow-left"></i> Kembali</a>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Simpan</button>
                 </div>
             </form>
         </div>

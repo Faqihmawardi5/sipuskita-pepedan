@@ -216,11 +216,17 @@
 								</table>
 							</div>
 						</div>
-                        <div class="pull-right">
+						<div class="pull-right">
 							<a href="<?= base_url('transaksi');?>" class="btn btn-danger btn-md">Kembali</a>
-							<a href="<?= base_url('transaksi/cetak/'.$pinjam->pinjam_id);?>" target="_blank" class="btn btn-primary btn-md"><i class="fa fa-print"></i> Cetak</a>
-						</div>
 
+							<?php if($this->session->userdata('level') == 'Petugas'){ ?>
+								<a href="<?= base_url('transaksi/cetak/'.$pinjam->pinjam_id);?>" 
+								target="_blank" 
+								class="btn btn-primary btn-md">
+								<i class="fa fa-print"></i> Cetak
+								</a>
+							<?php } ?>
+						</div>
 		        </div>
 	        </div>
 	    </div>
